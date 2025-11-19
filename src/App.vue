@@ -77,4 +77,5 @@ const handleLogin = async () => {
 </template>
 
 <style scoped>
+@import "tailwindcss";
 </style>
