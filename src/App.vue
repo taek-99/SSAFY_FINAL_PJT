@@ -14,7 +14,7 @@ const errorMsg = ref('')
 
 // 기본 API
 const api = axios.create({
-  baseURL: 'http://172.31.16.191',
+  baseURL: '/api', // nginx가 /api를 내부 백엔드로 프록시
 })
 
 // 로그인 로직
