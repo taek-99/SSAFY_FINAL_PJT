@@ -1,9 +1,8 @@
-<script setup>
-
+<script setup> 
 </script>
 
 <template>
-  <router-view/>
+    <h1>여긴 회원가입</h1>
 </template>
 
 <style scoped>
