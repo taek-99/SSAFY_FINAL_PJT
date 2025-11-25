@@ -5,6 +5,7 @@ import Login from "../pages/Login.vue";
 import Signup from '../pages/Signup.vue';
 import Main from '../pages/Main.vue';
 import KakaoCallback from '../pages/KakaoCallback.vue';
+import NaverCallback from '../pages/NaverCallback.vue';
 
 
 const routes = [
@@ -16,7 +17,12 @@ const routes = [
         path: '/auth/kakao/callback',
         name: 'KakaoCallback',
         component: KakaoCallback ,
-        }
+        }, 
+    {
+        path: '/auth/naver/callback',
+        name: 'NaverCallback',
+        component: NaverCallback ,
+        }, 
 ]
 
 const router = createRouter({

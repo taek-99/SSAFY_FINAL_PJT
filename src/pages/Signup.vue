@@ -93,7 +93,7 @@ const password2End = () =>{
 </script>
 
 <template>
-  <div class="mt-20 max-w-md mx-auto flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 font-bold border-2 border-green-500">
+  <div class="mt-20 max-w-md mx-auto flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 font-bold border-2 border-blue-500">
       <h2 class="text-center text-2xl font-bold tracking-tight text-gray-900 mb-8">
         회원가입
       </h2>
@@ -203,39 +203,7 @@ const password2End = () =>{
             class="block w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
         </div>
-
-        <!-- 회원 유형 -->
-        <!-- <div>
-        <span class="block text-sm font-medium text-gray-700 mb-1">
-            회원 유형
-        </span>
-
-        <div class="flex gap-4">
-            <label class="flex items-center gap-2 text-sm text-gray-800">
-            <input
-                type="radio"
-                name="userType"
-                value="doctor"
-                v-model="userType"
-                class="text-indigo-600 focus:ring-indigo-500"
-            />
-            <span>의료진</span>
-            </label>
-
-            <label class="flex items-center gap-2 text-sm text-gray-800">
-            <input
-                type="radio"
-                name="userType"
-                value="normal"
-                v-model="userType"
-                class="text-indigo-600 focus:ring-indigo-500"
-            />
-            <span>일반 회원</span>
-            </label>
-        </div>
-        </div> -->
-
-        <!-- 비밀번호 -->
+        
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">
             전화번호

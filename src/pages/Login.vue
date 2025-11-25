@@ -26,37 +26,43 @@ const handleLogin = async () => {
 const kakaoLogin = () => {
   const REST_API_KEY = import.meta.env.VITE_KAKAO_KEY
   const REDIRECT_URI = encodeURIComponent(import.meta.env.VITE_KAKAO_REDIRECT_URI)
-  
+
   const url =
     'https://kauth.kakao.com/oauth/authorize' +
     `?client_id=${REST_API_KEY}` +
     `&redirect_uri=${REDIRECT_URI}` +
     '&response_type=code'
 
-  console.log('kakao url:', url) // 한 번 찍어보고
   window.location.href = url
 };
-
-
 
 
 const naverLogin = () => {
   const clientId = import.meta.env.VITE_NAVER_CLIENT_ID
   const redirectUri = encodeURIComponent(import.meta.env.VITE_NAVER_REDIRECT_URI)
-  const state = crypto.randomUUID()   // CSRF 방지용 (네이버 권장)
 
+  // CSRF용도
+  const state = Math.random().toString(36).substring(2) + Date.now().toString(36)
 
-  const url = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}`
+  const url =
+    `https://nid.naver.com/oauth2.0/authorize` +
+    `?response_type=code` +
+    `&client_id=${clientId}` +
+    `&redirect_uri=${redirectUri}` +
+    `&state=${state}`
 
+  // 디버깅용
+  console.log('NAVER URL:', url)
 
   window.location.href = url
 }
 
 
+
 </script>
 
 <template>
-  <div class="mt-20 max-w-md mx-auto flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 font-bold border-2 border-green-500">
+  <div class="mt-20 max-w-md mx-auto flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 font-bold border-2 border-blue-500">
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
       <img class="mx-auto h-30 w-auto dark:hidden" src="../assets/main_logo.png" alt="Your Company" />
       <img class="mx-auto h-30 w-auto not-dark:hidden" src="../assets/main_logo.png" alt="Your Company" />
