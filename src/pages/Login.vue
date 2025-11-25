@@ -62,7 +62,7 @@ const naverLogin = () => {
 </script>
 
 <template>
-  <div class="mt-20 max-w-md mx-auto flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 font-bold border-2 border-blue-500">
+  <div class="bg-white mt-5 max-w-md mx-auto flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 font-bold border-2 border-blue-500">
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
       <img class="mx-auto h-30 w-auto dark:hidden" src="../assets/main_logo.png" alt="Your Company" />
       <img class="mx-auto h-30 w-auto not-dark:hidden" src="../assets/main_logo.png" alt="Your Company" />
@@ -88,7 +88,7 @@ const naverLogin = () => {
           <div class="flex items-center justify-between">
             <label for="password" class="block text-sm/6 font-medium text-gray-900 dark:text-gray-100">Password</label>
             <div class="text-sm">
-              <a href="/" class="font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300">Forgot password?</a>
+              <a href='/forgetpassword' class="font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300">Forgot password?</a>
             </div>
           </div>
           <div class="mt-2">

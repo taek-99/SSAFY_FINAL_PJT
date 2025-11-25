@@ -93,7 +93,7 @@ const password2End = () =>{
 </script>
 
 <template>
-  <div class="mt-20 max-w-md mx-auto flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 font-bold border-2 border-blue-500">
+  <div class="bg-white mt-5 max-w-md mx-auto flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 font-bold border-2 border-blue-500">
       <h2 class="text-center text-2xl font-bold tracking-tight text-gray-900 mb-8">
         회원가입
       </h2>
@@ -126,15 +126,16 @@ const password2End = () =>{
             중복확인
             </button>
         </div>
-
-        </div>
-       <div
+        <div
+          class="mx-2"
           v-if="emailCheckStatus !== null" 
           :class="emailCheckStatus ? 'text-green-500' : 'text-red-500', 'text-xs mt-1'  "
         >
           {{ emailCheckMsg }}
         </div>
 
+        </div>
+       
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">
@@ -149,10 +150,10 @@ const password2End = () =>{
             class="block w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             placeholder="알파벳+숫자+특수문자로 8자리 이상 입력하세요"
           />
+        <div v-if="passwordError" class="mx-2 text-red-500 text-xs mt-1">
+          {{ passwordError }}
         </div>
 
-        <div v-if="passwordError" class="text-red-500 text-xs mt-1">
-          {{ passwordError }}
         </div>
 
         <!-- 비밀번호 확인 -->
@@ -169,10 +170,11 @@ const password2End = () =>{
             class="block w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             placeholder="비밀번호를 다시 입력하세요"
           />
-        </div>
-         <div v-if="password2Error" class="text-red-500 text-xs mt-1">
+        <div v-if="password2Error" class="mx-2  text-red-500 text-xs mt-1">
           {{ password2Error }}
         </div>
+        </div>
+         
 
 
 
