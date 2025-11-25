@@ -13,7 +13,6 @@ const errorMsg = ref('')
 const handleLogin = async () => {
   try {
     await axios.post(`${API_BASE_URL}accounts/login/`,{
-    // await axios.post("api/accounts/login/",{
       username: useremail.value,
       password: password.value,
     })
@@ -25,11 +24,21 @@ const handleLogin = async () => {
 }
 
 const kakaoLogin = () => {
-  window.location.href = `https://kauth.kakao.com/oauth/authorize?
-      client_id=${import.meta.env.VITE_KAKAO_KEY}
-      &redirect_uri=${import.meta.env.VITE_KAKAO_REDIRECT_URI}
-      &response_type=code`;
+  const REST_API_KEY = import.meta.env.VITE_KAKAO_KEY
+  const REDIRECT_URI = encodeURIComponent(import.meta.env.VITE_KAKAO_REDIRECT_URI)
+  
+  const url =
+    'https://kauth.kakao.com/oauth/authorize' +
+    `?client_id=${REST_API_KEY}` +
+    `&redirect_uri=${REDIRECT_URI}` +
+    '&response_type=code'
+
+  console.log('kakao url:', url) // 한 번 찍어보고
+  window.location.href = url
 };
+
+
+
 
 const naverLogin = () => {
   const clientId = import.meta.env.VITE_NAVER_CLIENT_ID

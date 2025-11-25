@@ -14,28 +14,36 @@ const errorMsg = ref('')
 const successMsg = ref('') 
 const phonenumber = ref('') 
 const birth_date = ref('')
-const user_unique_trueMsg = ref('')
-const user_unique_falseMsg = ref('')
+const emailCheckMsg = ref('')
+const emailCheckStatus = ref(null)  
+const passwordError = ref('')
+const password2Error = ref('')
 
 
 const checkEmail = async () => {
   try{
     const res = await axios.get(`${API_BASE_URL}accounts/signup/uu/`, {
-        username: email.value
+        params: {                     
+        username: email.value,
+      },
     })
-    console.log(res.data)
     if(res.data.bool_uu == true){
-        user_unique_trueMsg.value = '통과'
+      emailCheckStatus.value = true
+      emailCheckMsg.value = '사용 가능한 이메일입니다.'
     }else{
-        user_unique_falseMsg.value = '중복된 아이디가 있습니다.'
+      emailCheckStatus.value = false
+      emailCheckMsg.value = '중복된 이메일입니다.'
     }
     }catch (err){
-        console.error(err)
+      console.error(err)
+      emailCheckStatus.value = null
+      emailCheckMsg.value = '검사 중 오류 발생'
     }
 }
 
 const handleSignup = async () => {
-  if(user_unique_trueMsg === true){
+
+  if(emailCheckStatus.value === true || passwordError.value === ''){
     try {
     await axios.post(`${API_BASE_URL}accounts/signup/`,{
       username: email.value,
@@ -43,19 +51,45 @@ const handleSignup = async () => {
       name: name.value,
       phone_number: phonenumber.value,
       birth_date: birth_date.value,
+
     })
     router.push('/login')
   }catch (err){
-    errorMsg.value = '회원가입 실패 실패'
+    errorMsg.value = '회원가입 실패'
     console.error(err)
   }
   }else{
-    errorMsg.value = '중복검사부터 하쇼'
+    errorMsg.value = '뭐가 제대로 안돼있어요'
   }
 
 }
 
-    
+const password1End = () => {
+  const pw = password.value
+  passwordError.value = ""
+
+  const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(pw)
+  const hasNumber = /\d/.test(pw)
+  const hasLetter = /[a-zA-Z]/.test(pw)
+
+  if (pw.length < 8) {
+    passwordError.value = "8자리 이상으로 만드세요"
+  } else if (!hasLetter) {
+    passwordError.value = "알파벳을 포함해야 합니다"
+  } else if (!hasNumber) {
+    passwordError.value = "숫자를 포함해야 합니다"
+  } else if (!hasSpecial) {
+    passwordError.value = "특수문자를 포함해야 합니다"
+  }
+}
+
+const password2End = () =>{
+  password2Error.value = ""
+  if(password.value !== password2.value){
+    password2Error.value = "비번이 안맞습니다."
+  }
+}
+
 </script>
 
 <template>
@@ -92,16 +126,14 @@ const handleSignup = async () => {
             중복확인
             </button>
         </div>
-        <div v-if="user_unique_falseMsg || user_unique_trueMsg" class="text-sm">
-          <p v-if="user_unique_falseMsg" class="text-red-500">
-            {{ user_unique_falseMsg }}
-          </p>
-          <p v-if="user_unique_trueMsg" class="text-red-500">
-            {{ user_unique_trueMsg }}
-          </p>
-        </div>
-        </div>
 
+        </div>
+       <div
+          v-if="emailCheckStatus !== null" 
+          :class="emailCheckStatus ? 'text-green-500' : 'text-red-500', 'text-xs mt-1'  "
+        >
+          {{ emailCheckMsg }}
+        </div>
 
 
         <div>
@@ -110,12 +142,17 @@ const handleSignup = async () => {
           </label>
           <input
             v-model="password"
+            @blur="password1End"
             type="password"
             autocomplete="new-password"
             required
             class="block w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            placeholder="비밀번호를 입력하세요"
+            placeholder="알파벳+숫자+특수문자로 8자리 이상 입력하세요"
           />
+        </div>
+
+        <div v-if="passwordError" class="text-red-500 text-xs mt-1">
+          {{ passwordError }}
         </div>
 
         <!-- 비밀번호 확인 -->
@@ -125,6 +162,7 @@ const handleSignup = async () => {
           </label>
           <input
             v-model="password2"
+            @blur="password2End"
             type="password"
             autocomplete="new-password"
             required
@@ -132,6 +170,12 @@ const handleSignup = async () => {
             placeholder="비밀번호를 다시 입력하세요"
           />
         </div>
+         <div v-if="password2Error" class="text-red-500 text-xs mt-1">
+          {{ password2Error }}
+        </div>
+
+
+
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">
@@ -204,13 +248,12 @@ const handleSignup = async () => {
                 autocomplete="tel" 
                 required
                 class="block w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                placeholder="전화번호를 입력하세요"
+                placeholder=" - 빼고 숫자만 입력하세요"
             />
         </div>
 
 
     
-
         <!-- 에러 / 성공 메시지 -->
         <div v-if="errorMsg || successMsg" class="text-sm">
           <p v-if="errorMsg" class="text-red-500">
