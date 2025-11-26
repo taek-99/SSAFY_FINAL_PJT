@@ -4,7 +4,6 @@ import { ref } from "vue";
 const currentPassword = ref("");
 const newPassword = ref("");
 const confirmPassword = ref("");
-
 const currentPasswordError = ref("");
 const newPasswordError = ref("");
 const confirmPasswordError = ref("");
