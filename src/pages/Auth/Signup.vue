@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import { API_BASE_URL } from '../config';
+import { API_BASE_URL } from '../../config';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 
@@ -12,6 +12,7 @@ const password = ref('')
 const password2 = ref('')
 const errorMsg = ref('')
 const successMsg = ref('') 
+const gender = ref('M') 
 const phonenumber = ref('') 
 const birth_date = ref('')
 const emailCheckMsg = ref('')
@@ -51,7 +52,8 @@ const handleSignup = async () => {
       name: name.value,
       phone_number: phonenumber.value,
       birth_date: birth_date.value,
-
+      gender: gender.value,
+      email: email.value
     })
     router.push('/login')
   }catch (err){
@@ -192,6 +194,28 @@ const password2End = () =>{
             placeholder="이름을 입력하세요"
           />
         </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            성별
+          </label>
+
+          <!-- 성별 선택 라디오 -->
+          <div class="flex gap-4 mb-2">
+            <label class="flex items-center gap-1">
+              <input type="radio" value="M" v-model="gender" />
+              남
+            </label>
+
+            <label class="flex items-center gap-1">
+              <input type="radio" value="F" v-model="gender" />
+              여
+            </label>
+
+        
+            </div>
+          </div>
+
 
         <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">

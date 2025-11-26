@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
-import { API_BASE_URL } from '../config'
+import { API_BASE_URL } from '../../config'
 
 const router = useRouter()
 
@@ -12,13 +12,25 @@ const errorMsg = ref('')
 
 const handleLogin = async () => {
   try {
-    await axios.post(`${API_BASE_URL}accounts/login/`,{
+    const res = await axios.post(`${API_BASE_URL}accounts/login/`,{
       username: useremail.value,
       password: password.value,
     })
-    router.push('/main')
+    if (res.data.error_type === ''){
+      localStorage.setItem('access_token', res.data.access)
+      localStorage.setItem('refresh_token', res.data.refresh)
+      localStorage.setItem('user', JSON.stringify(res.data.user)) 
+      
+      router.push('/main')
+    } else if (res.data.error_type === 'undefined_email') {
+      errorMsg.value = '아이디가 없습니다.'
+    } else if (res.data.error_type === 'wrong_password') {
+      errorMsg.value = '비밀번호가 틀렸습니다.'
+    } else (errorMsg.value = '예외')
+
+
   }catch (err){
-    errorMsg.value = '로그인 실패'
+    errorMsg.value = '통신 실패'
     console.error(err)
   }
 }
@@ -64,8 +76,8 @@ const naverLogin = () => {
 <template>
   <div class="bg-white mt-5 max-w-md mx-auto flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 font-bold border-2 border-blue-500">
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-      <img class="mx-auto h-30 w-auto dark:hidden" src="../assets/main_logo.png" alt="Your Company" />
-      <img class="mx-auto h-30 w-auto not-dark:hidden" src="../assets/main_logo.png" alt="Your Company" />
+      <img class="mx-auto h-30 w-auto dark:hidden" src="../../assets/main_logo.png" alt="Your Company" />
+      <img class="mx-auto h-30 w-auto not-dark:hidden" src="../../assets/main_logo.png" alt="Your Company" />
       <h2 class="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900 dark:text-white">로그인 바람</h2>
     </div>
 
@@ -88,7 +100,7 @@ const naverLogin = () => {
           <div class="flex items-center justify-between">
             <label for="password" class="block text-sm/6 font-medium text-gray-900 dark:text-gray-100">Password</label>
             <div class="text-sm">
-              <a href='/forgetpassword' class="font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300">Forgot password?</a>
+              <a href='/resetpassword' class="font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300">Forgot password?</a>
             </div>
           </div>
           <div class="mt-2">
@@ -113,6 +125,7 @@ const naverLogin = () => {
         class="mt-1 w-full max-w-sm relative bg-[#FEE500] rounded-md px-4 py-2 flex justify-center items-center"
       >
         <!-- 아이콘: 왼쪽 고정 배치 -->
+        
         <svg 
           class="absolute left-6"
           width="24" height="24" viewBox="0 0 24 24" fill="#000000"
@@ -140,7 +153,7 @@ const naverLogin = () => {
         </svg>
 
         <!-- 중앙 텍스트 -->
-        <span class="text-white font-medium text-sm">
+        <span class="w-full text-white font-medium text-sm">
           네이버 로그인
         </span>
       </button>
