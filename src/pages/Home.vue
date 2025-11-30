@@ -39,13 +39,13 @@ const modules = [Navigation, Pagination]
         </Swiper>
     </div>
     <div class="text-red-500 text-center"> 설명서 볼시간에 빨리 시작하쇼 </div>
+    <a href="/login">
     <button
       class="mt-5 w-full rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
     >
-    <a href="/login">
       시작하기
-    </a>
     </button>
+    </a>
 
     </div>
 

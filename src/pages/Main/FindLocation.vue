@@ -14,6 +14,8 @@ const CLIENT_SECRET = import.meta.env.VITE_NAVER_MAP_CLIENT_SECRET
 
 // 접속 하자마자 위치 가져오는 로직
 onMounted(() => {
+  console.log('CLIENT_ID', CLIENT_ID)
+  console.log('CLIENT_SECRET', CLIENT_SECRET)
   if (!window.naver || !window.naver.maps) {
     console.error('네이버 지도 스크립트가 로드되지 않았습니다.')
     return
@@ -23,7 +25,7 @@ onMounted(() => {
   const startPos = new window.naver.maps.LatLng(37.3595704, 127.105399)
   map = new window.naver.maps.Map(mapDiv.value, {
     center: startPos,
-    zoom: 10,
+    zoom: 17,
   })
 
   marker = new window.naver.maps.Marker({
@@ -62,6 +64,9 @@ onMounted(() => {
 
 // 위도+경도를 주소로 변환
 async function getAddressFromCoords(lat, lng) {
+  
+  console.log(lat)
+  console.log(lng)
   const url = `/naver/map-reversegeocode/v2/gc?coords=${lng},${lat}&orders=roadaddr&output=json`
 
     const res = await fetch(url, {
@@ -71,7 +76,7 @@ async function getAddressFromCoords(lat, lng) {
     },
     })
 
-
+    
   const data = await res.json()
   const result = data.results[0]
   const region = result.region
