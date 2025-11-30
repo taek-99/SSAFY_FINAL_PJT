@@ -72,7 +72,6 @@ async function getAddressFromCoords(lat, lng) {
   const res = await fetch(url)   // 헤더 없음
 
   const data = await res.json()
-  console.log('reverse data', data)
 
   const result = data.results[0]
   const region = result.region
