@@ -6,7 +6,6 @@ import LogOut from '../../components/LogOut.vue'
 const rolemessage = ref('일반인')
 
 const user = JSON.parse(localStorage.getItem("user") || "{}")
-console.log(user)
 
 if (user.role === true) {
   rolemessage.value = '의료진'
