@@ -3,12 +3,14 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from "../pages/Home.vue";
 import Login from "../pages/Auth/Login.vue";
 import Signup from '../pages/Auth/Signup.vue';
-import Main from '../pages/Main.vue';
+import Main from '../pages/Main/Main.vue';
 import ForgetPassword from '../pages/Auth/ForgetPassword.vue';
 import KakaoCallback from '../components/KakaoCallback.vue';
 import NaverCallback from '../components/NaverCallback.vue';
 import NotAuthenticated from '../pages/NotAuthenticated.vue';
 import ResetPassword from '../pages/Auth/ResetPassword.vue';
+import License from '../pages/Auth/License.vue';
+import FindLocation from '../pages/Main/FindLocation.vue';
 
 
 const routes = [
@@ -18,6 +20,8 @@ const routes = [
     { path: '/main', name: 'main', component: Main, meta: {requiresAuth: true} },
     { path: '/resetpassword', name: 'resetpassword', component: ResetPassword},
     { path: '/notauthenticated', name: 'notauthenticated', component: NotAuthenticated},
+    { path: '/license', name: 'license', component: License},
+    { path: '/findlocations', name: 'findlocations', component: FindLocation},
 
     { path: '/forgetpassword', 
       name: 'forgetpassword', 
@@ -61,6 +65,11 @@ router.beforeEach((to, from, next) => {
     return next('/notauthenticated')      // 로그인 안됐으면 로그인 창으로 이동
   }
 
+  const authPages = ['login', 'signup']
+  if (token && authPages.includes(to.name)) {
+    return next('/main')   // 메인으로 돌려보냄
+  }
+  
   next() // 통과
 })
 
