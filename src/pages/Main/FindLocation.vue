@@ -83,44 +83,9 @@ async function getAddressFromCoords(lat, lng) {
 }
 
 
-// 위도+경도를 주소로 변환
-// async function getAddressFromCoords(lat, lng) {
+// async function locationFind(params) {
   
-//   console.log(lat)
-//   console.log(lng)
-//   const url =
-//   'https://maps.apigw.ntruss.com/map-reversegeocode/v2/gc'
-//   + `?request=coordsToaddr`
-//   + `&coords=${lng},${lat}`
-//   + `&orders=roadaddr`
-//   + `&output=json`
-//   // const url = `/naver/map-reversegeocode/v2/gc?coords=${lng},${lat}&orders=roadaddr&output=json`
-
-//   const res = await fetch(url, {
-//   headers: {
-//       'x-ncp-apigw-api-key-id': CLIENT_ID,
-//       'x-ncp-apigw-api-key': CLIENT_SECRET,
-//   },
-//   })
-
-//   console.log(res)
-    
-//   const data = await res.json()
-//   const result = data.results[0]
-//   const region = result.region
-//   const land = result.land
-
-
-//   console.log(data)
-//   console.log(result)
-
-//   myAddress.value =
-//     `${region.area1.name} ${region.area2.name} ${region.area3.name} ` +
-//     `${land?.number1 || ''} ${land?.number2 ? '-' + land.number2 : ''}`
-
 // }
-
-
 
 </script>
 
@@ -129,7 +94,10 @@ async function getAddressFromCoords(lat, lng) {
     class="bg-white mt-5 max-w-md mx-auto flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 font-bold border-2 border-blue-500"
   >
     <h1 class="text-center">지도 표시</h1>
-
+    <div>
+    <!-- <input type="text" name="locationName">
+    <button @submit="locationFind">주소 입력</button> -->
+    </div>
     <div class="text-center">
       <div
         class="mt-5"

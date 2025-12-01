@@ -1,15 +1,11 @@
 <script setup>
 
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import LogOut from '../../components/LogOut.vue'
 
-const rolemessage = ref('일반인')
 
-const user = JSON.parse(localStorage.getItem("user") || "{}")
-
-if (user.role === true) {
-  rolemessage.value = '의료진'
-}
+const user = ref(JSON.parse(localStorage.getItem("user") || "{}"))
+const roleMessage = computed(() => user._rawValue.role ? '의료진' : '일반인')
 
 </script>
 
@@ -19,7 +15,7 @@ if (user.role === true) {
       <img class="mx-auto h-30 w-auto dark:hidden" src="../../assets/main_logo.png" alt="Your Company" />
       <img class="mx-auto h-30 w-auto not-dark:hidden" src="../../assets/main_logo.png" alt="Your Company" />
       <h1 class="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900 dark:text-white">환영합니다! {{ user.name }} 님</h1>
-      <p class="text-center">({{ rolemessage }})</p>
+      <p class="text-center">({{ roleMessage }})</p>
       <h2 class="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900 dark:text-white">당신의 용도는?</h2>
     </div>
 
