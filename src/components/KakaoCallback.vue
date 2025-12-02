@@ -23,8 +23,9 @@ onMounted(async () => {
     })
 
     // 토큰 저장
-    // localStorage.setItem("access", res.data.access)
-    console.log(res)
+    localStorage.setItem('access_token', res.data.access)
+    localStorage.setItem('refresh_token', res.data.refresh)
+    localStorage.setItem('user', JSON.stringify(res.data.user)) 
     router.push('/main')
   } catch (err) {
   console.error('카카오 로그인 에러:', err.response?.data || err)

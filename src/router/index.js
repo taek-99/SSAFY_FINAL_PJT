@@ -10,7 +10,8 @@ import NaverCallback from '../components/NaverCallback.vue';
 import NotAuthenticated from '../pages/NotAuthenticated.vue';
 import ResetPassword from '../pages/Auth/ResetPassword.vue';
 import License from '../pages/Auth/License.vue';
-import FindLocation from '../pages/Main/FindLocation.vue';
+import FindLocation from '../components/FindLocation.vue';
+import GeneralFindMap from '../pages/Main/GeneralFindMap.vue';
 
 
 const routes = [
@@ -22,6 +23,7 @@ const routes = [
     { path: '/notauthenticated', name: 'notauthenticated', component: NotAuthenticated},
     { path: '/license', name: 'license', component: License},
     { path: '/findlocations', name: 'findlocations', component: FindLocation},
+    { path: '/generalfindmap', name: 'generalfindmap', component: GeneralFindMap},
 
     { path: '/forgetpassword', 
       name: 'forgetpassword', 

@@ -59,7 +59,6 @@ const submitChangePassword = () => {
 </script>
 
 <template>
-  <div class="bg-white mt-5 max-w-md mx-auto flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 font-bold border-2 border-blue-500">
     <div class="text-center mb-6">
       <h1 class="text-xl font-semibold">비밀번호 변경</h1>
     </div>
@@ -128,7 +127,6 @@ const submitChangePassword = () => {
     >
       비밀번호 변경하기
     </button>
-  </div>
 </template>
 
 

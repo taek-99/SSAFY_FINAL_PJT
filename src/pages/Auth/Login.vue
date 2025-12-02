@@ -75,23 +75,31 @@ const naverLogin = () => {
 </script>
 
 <template>
-  <div class="bg-white mt-5 max-w-md mx-auto flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 font-bold border-2 border-blue-500">
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
       <img class="mx-auto h-30 w-auto dark:hidden" src="../../assets/main_logo.png" alt="Your Company" />
       <img class="mx-auto h-30 w-auto not-dark:hidden" src="../../assets/main_logo.png" alt="Your Company" />
-      <h2 class="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900 dark:text-white">로그인 바람</h2>
+      <h2 class="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900 ">로그인 바람</h2>
     </div>
 
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
       <form @submit.prevent="handleLogin" class="space-y-6">
         <div>
-          <label for="email" class="block text-sm/6 font-medium text-gray-900 dark:text-gray-100">Email address</label>
+          <label for="email" class="block text-sm/6 font-medium text-gray-900">Email address</label>
           <div class="mt-2">
             <input 
               type="email" 
               autocomplete="email" 
               required="" 
-              class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500" 
+              class="
+                block w-full rounded-md 
+                bg-white        /* 배경 확실하게 */
+                px-3 py-2 
+                text-base text-gray-900 
+                border border-gray-300   /* outline 대신 border 사용 */
+                placeholder:text-gray-500 
+                focus:border-indigo-600 
+                focus:ring-2 focus:ring-indigo-500 
+              "
               v-model = "useremail"
               />
           </div>
@@ -99,7 +107,7 @@ const naverLogin = () => {
 
         <div>
           <div class="flex items-center justify-between">
-            <label for="password" class="block text-sm/6 font-medium text-gray-900 dark:text-gray-100">Password</label>
+            <label for="password" class="block text-sm/6 font-medium text-gray-900">Password</label>
             <div class="text-sm">
               <a href='/resetpassword' class="font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300">Forgot password?</a>
             </div>
@@ -109,7 +117,16 @@ const naverLogin = () => {
               type="password" 
               autocomplete="current-password" 
               required="" 
-              class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500" 
+              class="
+                block w-full rounded-md 
+                bg-white        /* 배경 확실하게 */
+                px-3 py-2 
+                text-base text-gray-900 
+                border border-gray-300   /* outline 대신 border 사용 */
+                placeholder:text-gray-500 
+                focus:border-indigo-600 
+                focus:ring-2 focus:ring-indigo-500 
+              "
               v-model = "password"
               />
           </div>
@@ -121,9 +138,12 @@ const naverLogin = () => {
           </button>
         </div>
       </form>
+
+
+
       <button 
         @click="kakaoLogin"
-        class="mt-1 w-full max-w-sm relative bg-[#FEE500] rounded-md px-4 py-2 flex justify-center items-center"
+        class="mt-1 w-full relative bg-[#FEE500] rounded-md px-4 py-2 flex justify-center items-center"
       >
         <!-- 아이콘: 왼쪽 고정 배치 -->
         
@@ -136,14 +156,14 @@ const naverLogin = () => {
         </svg>
 
         <!-- 중앙 텍스트 -->
-        <span class="text-black font-medium text-sm font-semibold">
+        <span class="w-full text-black font-medium text-sm font-semibold">
           카카오 로그인
         </span>
       </button>
 
       <button 
         @click="naverLogin"
-        class="mt-1 w-full max-w-sm relative bg-[#03C75A] rounded-md px-4 py-2 flex justify-center items-center"
+        class="mt-1 w-full relative bg-[#03C75A] rounded-md px-4 py-2 flex justify-center items-center"
       >
         <!-- 네이버 로고 아이콘 (N 로고) -->
         <svg 
@@ -171,7 +191,6 @@ const naverLogin = () => {
         </router-link>
       
     </div>
-  </div>
 
 
 </template>

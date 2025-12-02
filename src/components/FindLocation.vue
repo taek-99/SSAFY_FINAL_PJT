@@ -1,3 +1,26 @@
+
+
+<template>
+    <div>
+    <!-- <input type="text" name="locationName">
+    <button @submit="locationFind">주소 입력</button> -->
+    </div>
+    <div class="text-center">
+      <button class="mt-3 justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:shadow-none dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-500"
+      @click="openAddressSearch">주소 검색</button>
+      <div
+        class="mt-5"
+        ref="mapDiv"
+        style="width: 100%; height: 400px"
+      ></div>
+
+      <div>
+        <h3 class="mt-2">현재 위치 정보</h3>
+        <p>{{ myAddress }}</p>
+      </div>
+    </div>
+</template>
+
 <script setup>
 import { onMounted, ref } from 'vue'
 
@@ -7,10 +30,10 @@ const myLng = ref('-')
 const myAddress = ref('')
 let map = null
 let marker = null
+const emit = defineEmits(['updateLocation'])
 
 const CLIENT_ID = import.meta.env.VITE_NAVER_MAP_CLIENT_ID
 const CLIENT_SECRET = import.meta.env.VITE_NAVER_MAP_CLIENT_SECRET
-
 
 // 접속 하자마자 위치 가져오는 로직
 onMounted(() => {
@@ -80,37 +103,61 @@ async function getAddressFromCoords(lat, lng) {
   myAddress.value =
     `${region.area1.name} ${region.area2.name} ${region.area3.name} ` +
     `${land?.number1 || ''} ${land?.number2 ? '-' + land.number2 : ''}`
+
+  emit('updateLocation', {
+    lat: myLat.value,
+    lng: myLng.value,
+    address: myAddress.value
+  })
+
+}
+
+const openAddressSearch = () => {
+  new window.daum.Postcode({
+    oncomplete: async (data) => {
+      const addr = data.roadAddress || data.jibunAddress
+      myAddress.value = addr
+
+      // 주소를 위도,, 경도로 변환
+      const coords = await getCoordsFromAddress(addr)
+
+      const myPos = new window.naver.maps.LatLng(coords.lat, coords.lng)
+      // 지도/마커 업데이트
+      map.setCenter(myPos)
+      marker.setPosition(myPos)
+
+      // 필요하면 부모에게 새 주소도 보냄
+      emit('updateLocation', {
+        lat: coords.lat,
+        lng: coords.lng,
+        address: myAddress.value,
+      })
+    },
+  }).open()
 }
 
 
-// async function locationFind(params) {
-  
-// }
+// 네이버 지도 주소 => 위/경도 api
+async function getCoordsFromAddress(address) {
+  const query = encodeURIComponent(address)
+
+  const res = await fetch(
+    `/naver/map-geocode/v2/geocode?query=${query}`
+  )
+
+  const data = await res.json()
+
+  if (data.addresses.length === 0) {
+    console.error("좌표를 찾을 수 없습니다.")
+    return null
+  }
+
+  const location = data.addresses[0]
+  return {
+    lat: Number(location.y),
+    lng: Number(location.x)
+  }
+}
 
 </script>
-
-<template>
-  <div
-    class="bg-white mt-5 max-w-md mx-auto flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 font-bold border-2 border-blue-500"
-  >
-    <h1 class="text-center">지도 표시</h1>
-    <div>
-    <!-- <input type="text" name="locationName">
-    <button @submit="locationFind">주소 입력</button> -->
-    </div>
-    <div class="text-center">
-      <div
-        class="mt-5"
-        ref="mapDiv"
-        style="width: 100%; height: 400px"
-      ></div>
-
-      <div>
-        <h3 class="mt-2">현재 위치 정보</h3>
-        <p>{{ myAddress }}</p>
-      </div>
-    </div>
-  </div>
-</template>
-
 <style scoped></style>

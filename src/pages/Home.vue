@@ -5,13 +5,13 @@ import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 
 import { Navigation, Pagination } from 'swiper/modules'
+import MainLayout from '../layouts/MainLayout.vue'
 const modules = [Navigation, Pagination]
 
 </script>
 
 
 <template>
-    <div class="bg-white mt-5 max-w-md mx-auto flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 font-bold border-2 border-blue-500">
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
       <img class="mx-auto h-30 w-auto dark:hidden" src="../assets/main_logo.png" alt="Your Company" />
       <img class="mx-auto h-30 w-auto not-dark:hidden" src="../assets/main_logo.png" alt="Your Company" />
@@ -46,9 +46,6 @@ const modules = [Navigation, Pagination]
       시작하기
     </button>
     </a>
-
-    </div>
-
 </template>
 
 <style scoped>

@@ -23,8 +23,9 @@ onMounted(async () => {
       code, state
     })
 
-    // 토큰 저장
-    // localStorage.setItem("access", res.data.access)
+    localStorage.setItem('access_token', res.data.access)
+    localStorage.setItem('refresh_token', res.data.refresh)
+    localStorage.setItem('user', JSON.stringify(res.data.user)) 
     console.log(res)
     router.push('/main')
   } catch (err) {

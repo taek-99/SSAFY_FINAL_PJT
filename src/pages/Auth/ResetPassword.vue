@@ -82,9 +82,6 @@ const verifyCode = async () => {
 </script>
 
 <template>
-  <div
-    class="bg-white mt-5 max-w-md mx-auto flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 font-bold border-2 border-blue-500"
-  >
     <div class="text-center mb-6">
       <h1 class="text-xl font-semibold">비밀번호 재설정</h1>
       <p class="mt-2 text-sm font-normal text-gray-600">
@@ -147,5 +144,4 @@ const verifyCode = async () => {
         {{ isVerifying ? "확인 중..." : "인증번호 확인" }}
       </button>
     </div>
-  </div>
 </template>

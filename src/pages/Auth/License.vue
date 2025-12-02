@@ -78,7 +78,6 @@ const handleLogin = async () => {
 </script>
 
 <template>
-  <div class="bg-white mt-5 max-w-md mx-auto flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 font-bold border-2 border-blue-500">
     <router-link
       to="/main"
       class="block text-sm/6 font-semibold text-indigo-600 hover:text-indigo-500"
@@ -233,7 +232,6 @@ const handleLogin = async () => {
       </button>
       </div>
     </form>
-    </div>
 
 </template>
 
