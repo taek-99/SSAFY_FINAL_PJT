@@ -2,6 +2,12 @@
   
   <h1 class="text-center">증상 선택하기</h1>
   <div ref="canvasContainer" class="mt-3 three-container"></div>
+  <div 
+    v-for="value in bodyPartLabels.filter(v => symptoms.includes(v.name))"
+    :key="value.name"
+  >
+    {{ value.label }}
+  </div>
 
 </template>
 
@@ -9,6 +15,8 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+
+const symptoms = ref([])
 
 const canvasContainer = ref(null)
 let animationId = null  
@@ -22,13 +30,87 @@ let isDragging = false
 
 let camera = null
 let zoomSpeed = 0.5
+let geo
 
-let isHeadSelected = false
 
 // 부위 클릭용
 let raycaster = new THREE.Raycaster()
 let mouse = new THREE.Vector2()
-let headHitbox = null
+const bodyParts = [
+  //  머리
+  { name: "Head",       pos: [0, 0.82, 0], type: "sphere", size: [0.15] },
+
+  //  상체
+  { name: "Chest",      pos: [0, 0.52, 0.08], type: "box",    size: [0.35, 0.4, 0.25] },
+  { name: "UpperBack",  pos: [0, 0.55, -0.08], type: "box",    size: [0.35, 0.35, 0.20] },
+  { name: "LowerBack",  pos: [0, 0.25, -0.08], type: "box",    size: [0.28, 0.20, 0.20] },
+  { name: "Abdomen",    pos: [0, 0.22, 0.08], type: "box",    size: [0.28, 0.23, 0.20] },
+
+  //  팔 (상완)
+  { name: "Biceps_R",   pos: [-0.3, 0.62, 0], type: "box",    size: [0.3, 0.15, 0.15] },
+  { name: "Biceps_L",   pos: [0.3, 0.62, 0], type: "box",    size: [0.3, 0.15, 0.15] },
+
+  //  팔 (하완)
+  { name: "Forearm_R",  pos: [-0.6, 0.62, 0], type: "box",    size: [0.35, 0.15, 0.15] },
+  { name: "Forearm_L",  pos: [0.6, 0.62, 0], type: "box",    size: [0.35, 0.15, 0.15] },
+
+  //  손
+  { name: "Hand_R",     pos: [-0.88, 0.62, 0], type: "sphere", size: [0.12] },
+  { name: "Hand_L",     pos: [0.88, 0.62, 0], type: "sphere", size: [0.12] },
+
+  //  허벅지
+  { name: "Thighs_R",   pos: [-0.12, -0.25, 0], type: "box",    size: [0.15, 0.35, 0.18] },
+  { name: "Thighs_L",   pos: [0.12, -0.25, 0], type: "box",    size: [0.15, 0.35, 0.18] },
+
+  //  종아리
+  { name: "Calf_R",     pos: [-0.15, -0.6, 0], type: "box",    size: [0.16, 0.35, 0.16] },
+  { name: "Calf_L",     pos: [0.15, -0.6, 0], type: "box",    size: [0.16, 0.35, 0.16] },
+
+  //  발
+  { name: "Foot_R",     pos: [-0.15, -0.9, 0], type: "sphere", size: [0.14] },
+  { name: "Foot_L",     pos: [0.15, -0.9, 0], type: "sphere", size: [0.14] },
+
+  //  골반
+  { name: "Hips",       pos: [0, 0.05, -0.08], type: "box",    size: [0.35, 0.2, 0.25] },
+
+  // 중요 부위
+  { name: "Genitalia",  pos: [0, 0, 0.08], type: "box",    size: [0.35, 0.2, 0.25] },
+];
+
+const bodyPartLabels = [
+  { name: "Head",       label: "머리" },
+
+  { name: "Chest",      label: "가슴" },
+  { name: "UpperBack",  label: "등(상부)" },
+  { name: "LowerBack",  label: "허리" },
+  { name: "Abdomen",    label: "복부" },
+
+  { name: "Biceps_R",   label: "오른쪽 위팔" },
+  { name: "Biceps_L",   label: "왼쪽 위팔" },
+
+  { name: "Forearm_R",  label: "오른쪽 팔뚝" },
+  { name: "Forearm_L",  label: "왼쪽 팔뚝" },
+
+  { name: "Hand_R",     label: "오른손" },
+  { name: "Hand_L",     label: "왼손" },
+
+  { name: "Thighs_R",   label: "오른 허벅지" },
+  { name: "Thighs_L",   label: "왼 허벅지" },
+
+  { name: "Calf_R",     label: "오른 종아리" },
+  { name: "Calf_L",     label: "왼 종아리" },
+
+  { name: "Foot_R",     label: "오른발" },
+  { name: "Foot_L",     label: "왼발" },
+
+  { name: "Hips",       label: "골반" },
+  { name: "Genitalia",  label: "급소" }
+]
+
+
+const parts = {}        // 실제 glTF 파트 (헤드, 손 등)
+const hitboxes = {}     // hitbox 객체
+const selected = {} 
 
 
 const handleWheel = (e) => {
@@ -62,7 +144,7 @@ const handleMouseMove = (e) => {
 
 const handleMouseDown = (e) => {
   isDragging = true
-  handleMouseMove(e)   // 눌렀을 때도 한 번 반응하도록
+  // handleMouseMove(e)   // 눌렀을 때도 한 번 반응하도록
 }
 
 const handleMouseUp = () => {
@@ -99,17 +181,23 @@ onMounted(() => {
     (gltf) => {
     model = gltf.scene
     model.position.set(0, 0, 0)
-
     scene.add(model);
+
+
+    bodyParts.forEach(p => {
+      parts[p.name] = model.getObjectByName(p.name)
+      selected[p.name] = false
+    })
 
     makeHeatbox()
     animate()
+
     const dom = renderer.domElement
     dom.addEventListener('wheel', handleWheel)
     dom.addEventListener('mousedown', handleMouseDown)
     dom.addEventListener('mousemove', handleMouseMove)
     window.addEventListener('mouseup', handleMouseUp)
-    dom.addEventListener('click', onClickHead)
+    dom.addEventListener('click', onClickHitbox)
   },
   undefined,
   (error) => {
@@ -141,30 +229,41 @@ onBeforeUnmount(() => {
     dom.removeEventListener('mousedown', handleMouseDown)
     dom.removeEventListener('mousemove', handleMouseMove)
     dom.removeEventListener('wheel', handleWheel)
-    dom.removeEventListener('click', onClickHead)
+    dom.removeEventListener('click', onClickHitbox)
   }
   window.removeEventListener('mouseup', handleMouseUp)
 })
 
 
+// 히트박스 만들기
 const makeHeatbox = () => {
 
-    const headGeo = new THREE.SphereGeometry(0.15, 16, 16)
-    const headMat = new THREE.MeshBasicMaterial({
+    const hitMat  = new THREE.MeshBasicMaterial({
       color: 0xff0000,
       wireframe: true,
       transparent: true,
       opacity: 0.4,
     })
-    headHitbox = new THREE.Mesh(headGeo, headMat)
 
-    headHitbox.position.set(0, 0.8, 0)
-    model.add(headHitbox)
+    bodyParts.forEach(p => {
+      if (p.type === "sphere") {
+        geo = new THREE.SphereGeometry(p.size[0], 16, 16);
+      } 
+      else if (p.type === "box") {
+        geo = new THREE.BoxGeometry(p.size[0], p.size[1], p.size[2]);
+      }
+      const mesh = new THREE.Mesh(geo, hitMat.clone())
+      mesh.position.set(...p.pos)
+      mesh.visible = false
+
+      hitboxes[p.name] = mesh
+      model.add(mesh)
+   })
 
 }
 
-const onClickHead = (event) => {
-  if (!renderer || !camera || !headHitbox) return
+const onClickHitbox = (event) => {
+  if (!renderer || !camera) return
 
   const rect = renderer.domElement.getBoundingClientRect()
 
@@ -175,20 +274,48 @@ const onClickHead = (event) => {
   raycaster.setFromCamera(mouse, camera)
 
   // headHitbox만 검사
-  const intersects = raycaster.intersectObject(headHitbox, false)
+  const hitboxList = Object.values(hitboxes)
+  const intersects = raycaster.intersectObjects(hitboxList, false)
 
-  if (intersects.length > 0) {
-    // 선택 상태 토글
-    isHeadSelected = !isHeadSelected
+  if (!intersects.length) return
 
-    // 색 바꾸기: 선택되면 초록색, 해제되면 빨간색
-    headHitbox.material.color.set(isHeadSelected ? 0x00ff00 : 0xff0000)
+  const hitObj = intersects[0].object
+  const clickedName = Object.keys(hitboxes).find(
+    key => hitboxes[key] === hitObj
+  )
 
-    // 필요하면 투명도도 같이 조정 가능
-    // headHitbox.material.opacity = isHeadSelected ? 0.8 : 0.4
+  togglePart(clickedName)
+}
 
-    console.log('머리 클릭됨! 현재 선택 상태:', isHeadSelected)
+const togglePart = (name) => {
+  selected[name] = !selected[name]
+
+  const part = parts[name]
+  if (!part) return
+
+  part.traverse(child => {
+    if (child.isMesh) {
+      child.material = child.material.clone()
+      
+      if (selected[name]) {
+        child.material.color.set(0xff0000)     // 선택됨
+      } else {
+        child.material.color.set(0xffffff)     // 기본색
+        child.material.roughness = 0.6
+        child.material.metalness = 0
+      }
+    }
+  })
+
+  if (selected[name]) {
+    if (!symptoms.value.includes(name)) {
+      symptoms.value.push(name)
+    }
+  } else {
+    const idx = symptoms.value.indexOf(name)
+    if (idx !== -1) symptoms.value.splice(idx, 1)
   }
+
 }
 
 </script>
