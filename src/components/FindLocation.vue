@@ -1,39 +1,63 @@
 
 
 <template>
-    <div>
-    <!-- <input type="text" name="locationName">
-    <button @submit="locationFind">주소 입력</button> -->
-    </div>
     <div class="text-center">
+    <div class="flex justify-center items-center gap-4">
+
+
+    <div class="mt-3 w-50 border-2 border-black-500">
+      <h3>반경 설정</h3>
+         <input
+          type="range"
+          v-model="distance"
+          min="10"
+          max="50"
+          class="slider"
+        />
+        {{ distance }} km
+     </div>
+
       <button class="mt-3 justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:shadow-none dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-500"
       @click="openAddressSearch">주소 검색</button>
+    </div>
       <div
         class="mt-5"
         ref="mapDiv"
         style="width: 100%; height: 400px"
-      ></div>
+      >
+    </div>
 
       <div>
         <h3 class="mt-2">현재 위치 정보</h3>
         <p>{{ myAddress }}</p>
       </div>
+    
     </div>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 
 const mapDiv = ref(null)
 const myLat = ref('-')
 const myLng = ref('-')
 const myAddress = ref('')
+const distance = ref(10)
 let map = null
 let marker = null
 const emit = defineEmits(['updateLocation'])
 
 const CLIENT_ID = import.meta.env.VITE_NAVER_MAP_CLIENT_ID
 const CLIENT_SECRET = import.meta.env.VITE_NAVER_MAP_CLIENT_SECRET
+
+watch(distance, (val) => {
+  emit('updateLocation', {
+    lat: myLat.value,
+    lng: myLng.value,
+    address: myAddress.value,
+    distance: val
+  })
+})
 
 // 접속 하자마자 위치 가져오는 로직
 onMounted(() => {
@@ -107,7 +131,8 @@ async function getAddressFromCoords(lat, lng) {
   emit('updateLocation', {
     lat: myLat.value,
     lng: myLng.value,
-    address: myAddress.value
+    address: myAddress.value,
+    distance: distance.value
   })
 
 }
@@ -131,6 +156,7 @@ const openAddressSearch = () => {
         lat: coords.lat,
         lng: coords.lng,
         address: myAddress.value,
+        distance: distance.value
       })
     },
   }).open()

@@ -1,7 +1,8 @@
 <template>
   
   <h1 class="text-center">증상 선택하기</h1>
-  <div ref="canvasContainer" class="three-container"></div>
+  <div ref="canvasContainer" class="mt-3 three-container"></div>
+
 </template>
 
 <script setup>
@@ -12,10 +13,34 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 const canvasContainer = ref(null)
 let animationId = null  
 let model = null
+let renderer = null
+let scene = null
 
 let targetRotX = 0
 let targetRotY = 0
 let isDragging = false 
+
+let camera = null
+let zoomSpeed = 0.5
+
+let isHeadSelected = false
+
+// 부위 클릭용
+let raycaster = new THREE.Raycaster()
+let mouse = new THREE.Vector2()
+let headHitbox = null
+
+
+const handleWheel = (e) => {
+  if (!camera) return
+
+  // e.deltaY > 0 : 휠 내리기(축소)
+  // e.deltaY < 0 : 휠 올리기(확대)
+  camera.position.z += e.deltaY * 0.01 * zoomSpeed
+
+  // 줌 한계 설정 (너무 가까워지거나 멀어지지 않게)
+  camera.position.z = Math.min(Math.max(camera.position.z, 1.5), 5)
+}
 
 const handleMouseMove = (e) => {
   if (!isDragging) return 
@@ -50,13 +75,13 @@ onMounted(() => {
   const height = canvasContainer.value.clientHeight 
 
   // 씬 생성
-  let scene = new THREE.Scene();
+  scene = new THREE.Scene();
 
   // 카메라 생성
-  let camera = new THREE.PerspectiveCamera(30, 1, 0.1, 1000);
+  camera = new THREE.PerspectiveCamera(30, 1, 0.1, 1000);
   camera.position.set(0, 0.25, 5)
 
-  let renderer = new THREE.WebGLRenderer({ antialias: true })
+  renderer = new THREE.WebGLRenderer({ antialias: true })
   renderer.setSize(width, height)
   canvasContainer.value.appendChild(renderer.domElement)
 
@@ -77,11 +102,14 @@ onMounted(() => {
 
     scene.add(model);
 
+    makeHeatbox()
     animate()
     const dom = renderer.domElement
+    dom.addEventListener('wheel', handleWheel)
     dom.addEventListener('mousedown', handleMouseDown)
     dom.addEventListener('mousemove', handleMouseMove)
     window.addEventListener('mouseup', handleMouseUp)
+    dom.addEventListener('click', onClickHead)
   },
   undefined,
   (error) => {
@@ -99,6 +127,7 @@ const animate = () => {
     model.rotation.x = THREE.MathUtils.lerp(model.rotation.x, targetRotX, 0.1)
   }
 
+
   renderer.render(scene, camera)
 }
 
@@ -111,9 +140,56 @@ onBeforeUnmount(() => {
   if (dom) {
     dom.removeEventListener('mousedown', handleMouseDown)
     dom.removeEventListener('mousemove', handleMouseMove)
+    dom.removeEventListener('wheel', handleWheel)
+    dom.removeEventListener('click', onClickHead)
   }
   window.removeEventListener('mouseup', handleMouseUp)
 })
+
+
+const makeHeatbox = () => {
+
+    const headGeo = new THREE.SphereGeometry(0.15, 16, 16)
+    const headMat = new THREE.MeshBasicMaterial({
+      color: 0xff0000,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.4,
+    })
+    headHitbox = new THREE.Mesh(headGeo, headMat)
+
+    headHitbox.position.set(0, 0.8, 0)
+    model.add(headHitbox)
+
+}
+
+const onClickHead = (event) => {
+  if (!renderer || !camera || !headHitbox) return
+
+  const rect = renderer.domElement.getBoundingClientRect()
+
+  // 화면 좌표 → NDC(-1 ~ 1)
+  mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1
+  mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1
+
+  raycaster.setFromCamera(mouse, camera)
+
+  // headHitbox만 검사
+  const intersects = raycaster.intersectObject(headHitbox, false)
+
+  if (intersects.length > 0) {
+    // 선택 상태 토글
+    isHeadSelected = !isHeadSelected
+
+    // 색 바꾸기: 선택되면 초록색, 해제되면 빨간색
+    headHitbox.material.color.set(isHeadSelected ? 0x00ff00 : 0xff0000)
+
+    // 필요하면 투명도도 같이 조정 가능
+    // headHitbox.material.opacity = isHeadSelected ? 0.8 : 0.4
+
+    console.log('머리 클릭됨! 현재 선택 상태:', isHeadSelected)
+  }
+}
 
 </script>
 

@@ -22,10 +22,12 @@ import axios from 'axios';
 import FindLocation from '../../components/FindLocation.vue';
 import { ref } from 'vue'
 import { API_BASE_URL } from '../../config';
+import { useRouter } from 'vue-router';
 
 const lat = ref('')
 const lng = ref('')
 const address = ref('')
+const distance = ref('')
 const user = ref(JSON.parse(localStorage.getItem("user") || "{}"))._rawValue
 const access = localStorage.getItem("access_token")
 
@@ -33,24 +35,29 @@ const handleLocation = (info) => {
   lat.value = info.lat
   lng.value = info.lng
   address.value = info.address
+  distance.value = info.distance
+
 }
+
+const router = useRouter()
 
 console.log(user)
 
 const findhospital = async () =>{
+
     try{
     const res = await axios.post(`${API_BASE_URL}hospitals/user/location/`,{
         useremail : user.email,
         sign_kind : user.sign_kind,
         latitude : lat.value,
         longitude : lng.value,
-        locationstext : address.value
+        locationstext : address.value,
+        radius : distance.value
      },{
           headers: {
             Authorization: `Bearer ${access}`,
           },})
-        console.log("성공")
-        console.log(res.data.result)
+        router.push('/generalsymptoms')
     }
     catch (error){
         console.error(error)
