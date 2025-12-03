@@ -13,6 +13,7 @@ import License from '../pages/Auth/License.vue';
 import FindLocation from '../components/FindLocation.vue';
 import GeneralFindMap from '../pages/Main/GeneralFindMap.vue';
 import GeneralSymptoms from '../pages/Main/GeneralSymptoms.vue';
+import HospitalList from '../pages/Main/HospitalList.vue';
 
 
 const routes = [
@@ -26,6 +27,7 @@ const routes = [
     { path: '/findlocations', name: 'findlocations', component: FindLocation},
     { path: '/generalfindmap', name: 'generalfindmap', component: GeneralFindMap},
     { path: '/generalsymptoms', name: 'generalsymptoms', component: GeneralSymptoms},
+    { path: '/hospitallist', name: 'hospitallist', component: HospitalList},
 
     { path: '/forgetpassword', 
       name: 'forgetpassword', 

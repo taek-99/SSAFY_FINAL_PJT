@@ -1,22 +1,65 @@
 <template>
   
-  <h1 class="text-center">증상 선택하기</h1>
+  <div class="text-center">
+    <h1 class="text-3xl">증상 선택하기</h1>
+    <p class="text-xs">(입력을 안해도 무방하지만 자세한 응급실 찾기를 위해 증상 입력 바랍니다.)</p>
+  </div>
   <div ref="canvasContainer" class="mt-3 three-container"></div>
   <div 
     v-for="value in bodyPartLabels.filter(v => symptoms.includes(v.name))"
     :key="value.name"
+    class="mt-3 flex items-center justify-between"
   >
-    {{ value.label }}
+    <span class="font-semibold">
+    {{ value.label }} : 
+    </span>
+    <input 
+      type="text" 
+      v-model="SymptomDescription[value.label]" 
+      class="border border-black-500 rounded-sm ml-4 w-1/2">
   </div>
 
+    <div>
+    <button @click="findhospital" class=" mt-5 flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:shadow-none dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-500">
+      병원 찾기
+    </button>
+  </div>
 </template>
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { API_BASE_URL } from '../../config'
+import axios from 'axios'
+import { useRouter } from 'vue-router'
+
+
+const router = useRouter()
+
+const findhospital = async () => {
+  const mergedSymptoms = Object.entries(SymptomDescription.value).map(
+    ([key, value]) => `${key}: ${value}`
+  )
+  console.log(SymptomDescription.value)
+  try{
+    const res = await axios.post(`${API_BASE_URL}hospitals/user/location/`,{
+      symptoms : mergedSymptoms
+     },{
+          headers: {
+            Authorization: `Bearer ${access}`,
+          },})
+        router.push('/hospitallist')
+    }
+    catch (error){
+      console.log(mergedSymptoms)
+        console.error(error)
+    }
+    
+}
 
 const symptoms = ref([])
+const SymptomDescription = ref({})
 
 const canvasContainer = ref(null)
 let animationId = null  
@@ -94,11 +137,11 @@ const bodyPartLabels = [
   { name: "Hand_R",     label: "오른손" },
   { name: "Hand_L",     label: "왼손" },
 
-  { name: "Thighs_R",   label: "오른 허벅지" },
-  { name: "Thighs_L",   label: "왼 허벅지" },
+  { name: "Thighs_R",   label: "오른쪽 허벅지" },
+  { name: "Thighs_L",   label: "왼쪽 허벅지" },
 
-  { name: "Calf_R",     label: "오른 종아리" },
-  { name: "Calf_L",     label: "왼 종아리" },
+  { name: "Calf_R",     label: "오른쪽 종아리" },
+  { name: "Calf_L",     label: "왼쪽 종아리" },
 
   { name: "Foot_R",     label: "오른발" },
   { name: "Foot_L",     label: "왼발" },
