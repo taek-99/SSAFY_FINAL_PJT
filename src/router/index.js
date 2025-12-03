@@ -12,6 +12,7 @@ import ResetPassword from '../pages/Auth/ResetPassword.vue';
 import License from '../pages/Auth/License.vue';
 import FindLocation from '../components/FindLocation.vue';
 import GeneralFindMap from '../pages/Main/GeneralFindMap.vue';
+import GeneralSymptoms from '../pages/Main/GeneralSymptoms.vue';
 
 
 const routes = [
@@ -24,6 +25,7 @@ const routes = [
     { path: '/license', name: 'license', component: License},
     { path: '/findlocations', name: 'findlocations', component: FindLocation},
     { path: '/generalfindmap', name: 'generalfindmap', component: GeneralFindMap},
+    { path: '/generalsymptoms', name: 'generalsymptoms', component: GeneralSymptoms},
 
     { path: '/forgetpassword', 
       name: 'forgetpassword', 
